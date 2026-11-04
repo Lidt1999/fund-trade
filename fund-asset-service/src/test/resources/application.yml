@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: fund-asset-service-test
+  config:
+    import: "optional:nacos:fund-asset-service.yaml"
+  datasource:
+    url: jdbc:h2:mem:fund_asset_test;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+seata:
+  enabled: false

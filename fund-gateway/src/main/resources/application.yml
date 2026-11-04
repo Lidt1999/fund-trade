@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: fund-gateway
+  config:
+    import: optional:nacos:${spring.application.name}.yaml
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:localhost:8848}
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+      config:
+        server-addr: ${NACOS_SERVER_ADDR:localhost:8848}
+        file-extension: yaml
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+      routes:
+        - id: trade-service
+          uri: lb://fund-trade-service
+          predicates:
+            - Path=/api/trades/**
+        - id: asset-service
+          uri: lb://fund-asset-service
+          predicates:
+            - Path=/api/assets/**
+        - id: payment-service
+          uri: lb://fund-payment-service
+          predicates:
+            - Path=/api/payments/**
+server:
+  port: 8080
+gateway:
+  auth:
+    enabled: ${GATEWAY_AUTH_ENABLED:true}

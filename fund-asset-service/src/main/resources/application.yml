@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: fund-asset-service
+  config:
+    import: optional:nacos:${spring.application.name}.yaml
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:localhost:8848}
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+      config:
+        server-addr: ${NACOS_SERVER_ADDR:localhost:8848}
+        file-extension: yaml
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_ASSET_DATABASE:fund_asset}?useUnicode=true&characterEncoding=utf8&serverTimezone=Australia%2FSydney
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+server:
+  port: 8082
+seata:
+  enabled: true
+  application-id: ${spring.application.name}
+  tx-service-group: fund_tx_group
+  service:
+    vgroup-mapping:
+      fund_tx_group: default
+  registry:
+    type: file
+  config:
+    type: file
