@@ -1,0 +1,73 @@
+spring:
+  application:
+    name: fund-trade-service
+  config:
+    import: optional:nacos:${spring.application.name}.yaml
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:localhost:8848}
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+      config:
+        server-addr: ${NACOS_SERVER_ADDR:localhost:8848}
+        file-extension: yaml
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_TRADE_DATABASE:fund_trade}?useUnicode=true&characterEncoding=utf8&serverTimezone=Australia%2FSydney
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: ${REDIS_TIMEOUT:2s}
+server:
+  port: 8081
+trade:
+  calendar:
+    holidays: ${TRADE_HOLIDAYS:}
+
+asset-service:
+  base-url: http://localhost:8082
+payment-service:
+  base-url: http://localhost:8083
+rocketmq:
+  name-server: ${ROCKETMQ_NAME_SERVER:localhost:9876}
+  producer:
+    group: ${ROCKETMQ_PRODUCER_GROUP:fund-trade-producer}
+    send-message-timeout: ${ROCKETMQ_SEND_TIMEOUT:3000}
+  topic:
+    order: ${ROCKETMQ_ORDER_TOPIC:fund-order-topic}
+  consumer:
+    group: ${ROCKETMQ_CONSUMER_GROUP:fund-trade-consumer}
+  retry:
+    fixed-delay: ${ROCKETMQ_RETRY_FIXED_DELAY:60000}
+xxl:
+  job:
+    enabled: ${XXL_JOB_ENABLED:false}
+    admin:
+      addresses: ${XXL_JOB_ADMIN_ADDRESSES:http://localhost:8080/xxl-job-admin}
+    access-token: ${XXL_JOB_ACCESS_TOKEN:default_token}
+    executor:
+      appname: ${XXL_JOB_EXECUTOR_APPNAME:fund-trade-service}
+      address: ${XXL_JOB_EXECUTOR_ADDRESS:}
+      ip: ${XXL_JOB_EXECUTOR_IP:}
+      port: ${XXL_JOB_EXECUTOR_PORT:9999}
+      log-path: ${XXL_JOB_LOG_PATH:./logs/xxl-job}
+      log-retention-days: ${XXL_JOB_LOG_RETENTION_DAYS:30}
+seata:
+  enabled: true
+  application-id: ${spring.application.name}
+  tx-service-group: fund_tx_group
+  service:
+    vgroup-mapping:
+      fund_tx_group: default
+  registry:
+    type: file
+  config:
+    type: file
